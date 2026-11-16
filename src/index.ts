@@ -47,10 +47,17 @@ app.use(
   cors((req, callback) => {
     const origin = req.headers.origin;
     const selfOrigin = `${req.protocol}://${req.get('host')}`;
-    const allowed = !origin || env.clientUrls.includes(origin) || origin === selfOrigin;
+    
+    // Added your Vercel URL to the allowed list
+    const allowed = !origin || 
+                    env.clientUrls.includes(origin) || 
+                    origin === selfOrigin || 
+                    origin === 'https://kyoto-anime-client.vercel.app';
+                    
     callback(null, { origin: allowed, credentials: true });
   })
 );
+
 app.use(express.json({ limit: '1mb' }));
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
