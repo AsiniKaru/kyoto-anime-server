@@ -11,6 +11,7 @@ import { databaseState } from './config/db.js';
 import routes from './routes/indexRoutes.js';
 import { notFoundHandler, errorHandler } from './middleware/errorHandlerMiddleware.js';
 import { apiLimiter } from './middleware/rateLimitMiddleware.js';
+import mongoSanitize from 'express-mongo-sanitize';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -53,6 +54,7 @@ app.use(
 app.use(express.json({ limit: '1mb' }));
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+app.use(mongoSanitize());
 
 if (env.nodeEnv !== 'test') {
   app.use(morgan(env.nodeEnv === 'production' ? 'combined' : 'dev'));
@@ -72,7 +74,7 @@ app.get('/api/health', (_req, res) => {
 app.use('/api', apiLimiter, routes);
 
 // In production, serve the built React app from the same server (optional)
-const clientDist = path.resolve(__dirname, '../../frontend/dist');
+const clientDist = path.resolve(__dirname, '../../kyoto anime client/dist');
 if (isProduction && fs.existsSync(clientDist)) {
   app.use(express.static(clientDist));
   app.get('*', (req, res, next) => {

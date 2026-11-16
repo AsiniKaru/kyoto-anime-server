@@ -12,7 +12,7 @@ import {
   fallbackSearch,
 } from '../services/fallbackCatalogueService.js';
 import { asyncHandler } from '../utils/asyncHandler.js';
-import { badRequest, notFound } from '../utils/ApiError.js';
+import { badRequest, notFound } from '../utils/apiError.js';
 import type { Anime, AnimeGenre, Character, Episode, Recommendation } from '../types/anime.js';
 
 const CURRENT_YEAR = new Date().getFullYear();

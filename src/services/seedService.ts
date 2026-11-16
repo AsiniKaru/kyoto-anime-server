@@ -1,4 +1,4 @@
-import User from '../models/User.js';
+import User from '../models/userModel.js';
 import Watchlist from '../models/watchlistModel.js';
 import History from '../models/historyModel.js';
 import Review from '../models/reviewModel.js';

@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { WATCH_STATUSES } from '../models/Watchlist.js';
+import { WATCH_STATUSES } from '../models/watchlistModel.js';
 
 const malId = z.coerce.number().int().positive('A valid anime id is required');
 

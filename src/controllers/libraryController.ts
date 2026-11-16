@@ -7,7 +7,7 @@ import Watchlist, {
   type WatchStatus,
 } from '../models/watchlistModel.js';
 import History from '../models/historyModel.js';
-import Review from '../models/refreshTokenModel.js';
+import Review from '../models/reviewModel.js';
 import { asyncHandler } from '../utils/asyncHandler.js';
 import { badRequest, notFound, unauthorized } from '../utils/apiError.js';
 import { cleanString } from '../utils/validate.js';

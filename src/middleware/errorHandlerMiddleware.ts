@@ -25,12 +25,14 @@ export function errorHandler(
   let statusCode = error.statusCode || 500;
   let message = error.message || 'Something went wrong';
   let details: unknown = error.details || null;
+  let errors: unknown[] | undefined = undefined;
 
   // Mongoose validation errors
   if (error.name === 'ValidationError' && error.errors) {
     statusCode = 400;
     const messages = Object.values(error.errors).map((item) => item.message);
     details = messages;
+    errors = messages;
     message = messages[0] || 'Validation failed';
   }
 
@@ -54,7 +56,9 @@ export function errorHandler(
   res.status(statusCode).json({
     success: false,
     message,
-    ...(details ? { details } : {}),
+    data: null,
+    ...(errors ? { errors } : {}),
+    ...(details && !errors ? { details } : {}),
     ...(isProduction ? {} : { stack: error.stack }),
   });
 }

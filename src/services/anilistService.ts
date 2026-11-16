@@ -1,6 +1,6 @@
 import { env } from '../config/env.js';
 import { cacheGet, cacheSet } from '../utils/cache.js';
-import { ApiError } from '../utils/ApiError.js';
+import { ApiError } from '../utils/apiError.js';
 import type {
   AniListGenresPayload,
   AniListHomePayload,

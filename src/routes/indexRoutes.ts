@@ -3,6 +3,7 @@ import authRoutes from './authRoutes.js';
 import animeRoutes from './animeRoutes.js';
 import libraryRoutes from './libraryRoutes.js';
 import adminRoutes from './adminRoutes.js';
+import aiRoutes from './aiRoutes.js';
 
 const router = Router();
 
@@ -16,6 +17,7 @@ router.get('/', (_req, res) => {
       anime: '/api/anime',
       library: '/api/library',
       admin: '/api/admin',
+      ai: '/api/ai',
       health: '/api/health',
     },
   });
@@ -25,5 +27,6 @@ router.use('/auth', authRoutes);
 router.use('/anime', animeRoutes);
 router.use('/library', libraryRoutes);
 router.use('/admin', adminRoutes);
+router.use('/ai', aiRoutes);
 
 export default router;
