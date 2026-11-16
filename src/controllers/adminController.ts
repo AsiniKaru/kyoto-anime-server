@@ -1,10 +1,10 @@
 import type { Request } from 'express';
 import type { FilterQuery, Types } from 'mongoose';
-import User, { type IUser, type UserRole } from '../models/User.js';
-import Watchlist, { type WatchStatus } from '../models/Watchlist.js';
-import History from '../models/History.js';
-import Review from '../models/Review.js';
-import RefreshToken from '../models/RefreshToken.js';
+import User, { type IUser, type UserRole } from '../models/userModel.js';
+import Watchlist, { type WatchStatus } from '../models/watchlistModel.js';
+import History from '../models/historyModel.js';
+import Review from '../models/reviewModel.js';
+import RefreshToken from '../models/refreshTokenModel.js';
 import { asyncHandler } from '../utils/asyncHandler.js';
 import { badRequest, notFound, unauthorized } from '../utils/ApiError.js';
 import type { UpdateRoleInput } from '../validators/admin.js';

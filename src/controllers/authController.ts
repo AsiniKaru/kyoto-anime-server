@@ -1,7 +1,7 @@
 import crypto from 'node:crypto';
 import type { CookieOptions, Request, Response } from 'express';
-import User, { type IUser } from '../models/User.js';
-import RefreshToken from '../models/RefreshToken.js';
+import User, { type IUser } from '../models/userModel.js';
+import RefreshToken from '../models/refreshTokenModel.js';
 import Watchlist from '../models/Watchlist.js';
 import History from '../models/History.js';
 import Review from '../models/Review.js';

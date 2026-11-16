@@ -5,9 +5,9 @@ import Watchlist, {
   isWatchStatus,
   type IWatchlist,
   type WatchStatus,
-} from '../models/Watchlist.js';
-import History from '../models/History.js';
-import Review from '../models/Review.js';
+} from '../models/watchlistModel.js';
+import History from '../models/historyModel.js';
+import Review from '../models/refreshTokenModel.js';
 import { asyncHandler } from '../utils/asyncHandler.js';
 import { badRequest, notFound, unauthorized } from '../utils/ApiError.js';
 import { cleanString } from '../utils/validate.js';
