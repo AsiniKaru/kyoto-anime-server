@@ -9,7 +9,7 @@ import Watchlist, {
 import History from '../models/historyModel.js';
 import Review from '../models/refreshTokenModel.js';
 import { asyncHandler } from '../utils/asyncHandler.js';
-import { badRequest, notFound, unauthorized } from '../utils/ApiError.js';
+import { badRequest, notFound, unauthorized } from '../utils/apiError.js';
 import { cleanString } from '../utils/validate.js';
 import type { HistoryInput, ReviewInput, WatchlistInput } from '../validators/library.js';
 

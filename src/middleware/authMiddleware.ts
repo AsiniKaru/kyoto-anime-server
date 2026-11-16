@@ -1,7 +1,7 @@
 import type { Request, RequestHandler } from 'express';
 import User, { type UserRole } from '../models/userModel.js';
 import { verifyAccessToken } from '../utils/jwt.js';
-import { forbidden, unauthorized } from '../utils/ApiError.js';
+import { forbidden, unauthorized } from '../utils/apiError.js';
 
 const bearerToken = (req: Request): string | null => {
   const header = req.headers.authorization || '';

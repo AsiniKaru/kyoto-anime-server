@@ -7,7 +7,7 @@ import History from '../models/History.js';
 import Review from '../models/Review.js';
 import { signAccessToken } from '../utils/jwt.js';
 import { asyncHandler } from '../utils/asyncHandler.js';
-import { badRequest, conflict, unauthorized, notFound } from '../utils/ApiError.js';
+import { badRequest, conflict, unauthorized, notFound } from '../utils/apiError.js';
 import { env, isProduction } from '../config/env.js';
 import type {
   ChangePasswordInput,

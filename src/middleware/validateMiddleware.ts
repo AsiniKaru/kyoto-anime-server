@@ -1,6 +1,6 @@
 import type { RequestHandler } from 'express';
 import type { ZodTypeAny } from 'zod';
-import { badRequest } from '../utils/ApiError.js';
+import { badRequest } from '../utils/apiError.js';
 
 /**
  * Validates and replaces `req.body` with the parsed, typed Zod output.

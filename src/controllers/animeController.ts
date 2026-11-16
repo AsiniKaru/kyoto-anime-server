@@ -1,8 +1,8 @@
 import type { Request } from 'express';
-import { anilist, CACHE_TTL } from '../services/anilist.js';
-import { mapAnime, mapAnimeList, mapPagination } from '../services/animeMapper.js';
-import { genreName, mapGenre } from '../services/anilistGenres.js';
-import { resolveTrailer } from '../services/youtube.js';
+import { anilist, CACHE_TTL } from '../services/anilistService.js';
+import { mapAnime, mapAnimeList, mapPagination } from '../services/animeMapperService.js';
+import { genreName, mapGenre } from '../services/anilistGenresService.js';
+import { resolveTrailer } from '../services/youtubeService.js';
 import {
   fallbackAnime,
   fallbackAnimeById,
@@ -10,7 +10,7 @@ import {
   fallbackHome,
   fallbackRecommendations,
   fallbackSearch,
-} from '../services/fallbackCatalogue.js';
+} from '../services/fallbackCatalogueService.js';
 import { asyncHandler } from '../utils/asyncHandler.js';
 import { badRequest, notFound } from '../utils/ApiError.js';
 import type { Anime, AnimeGenre, Character, Episode, Recommendation } from '../types/anime.js';

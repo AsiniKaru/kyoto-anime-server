@@ -1,37 +1,87 @@
-import express, { Application, Request, Response } from 'express';
-import dotenv from 'dotenv';
+import express from 'express';
 import cors from 'cors';
-import connectDB from './config/db.js'; // CHANGED: simpler path (was '../src/config/db.js')
-import authRoutes from './routes/authRoutes.js';
-import animeRoutes from './routes/animeRoutes.js'; // NEW
+import helmet from 'helmet';
+import morgan from 'morgan';
+import cookieParser from 'cookie-parser';
+import path from 'node:path';
+import fs from 'node:fs';
+import { fileURLToPath } from 'node:url';
+import { env, isProduction } from './config/env.js';
+import { databaseState } from './config/db.js';
+import routes from './routes/indexRoutes.js';
+import { notFoundHandler, errorHandler } from './middleware/errorHandlerMiddleware.js';
+import { apiLimiter } from './middleware/rateLimitMiddleware.js';
 
-dotenv.config();
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-connectDB();
+const app = express();
 
-const app: Application = express();
+app.set('trust proxy', 1);
 
-// CHANGED: only allow your frontend instead of every website
 app.use(
-  cors({
-    origin: process.env.CLIENT_URL || 'http://localhost:5173',
-    credentials: true,
+  helmet({
+    crossOriginResourcePolicy: false,
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        baseUri: ["'self'"],
+        fontSrc: ["'self'", 'https:', 'data:'],
+        formAction: ["'self'"],
+        frameAncestors: ["'self'"],
+        imgSrc: ["'self'", 'data:', 'https:'],
+        objectSrc: ["'none'"],
+        scriptSrc: ["'self'"],
+        scriptSrcAttr: ["'none'"],
+        styleSrc: ["'self'", "'unsafe-inline'", 'https:'],
+        connectSrc: ["'self'", 'https:'],
+        frameSrc: ["'self'", 'https:'],
+        mediaSrc: ["'self'", 'https:', 'blob:'],
+        upgradeInsecureRequests: null,
+      },
+    },
   })
 );
-app.use(express.json());
 
-app.use('/api/auth', authRoutes);
-app.use('/api/anime', animeRoutes); // NEW
+app.use(
+  cors((req, callback) => {
+    const origin = req.headers.origin;
+    const selfOrigin = `${req.protocol}://${req.get('host')}`;
+    const allowed = !origin || env.clientUrls.includes(origin) || origin === selfOrigin;
+    callback(null, { origin: allowed, credentials: true });
+  })
+);
+app.use(express.json({ limit: '1mb' }));
+app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 
-// A simple test route
-app.get('/', (req: Request, res: Response) => {
-  res.send('Kyoto Anime Server is running...');
+if (env.nodeEnv !== 'test') {
+  app.use(morgan(env.nodeEnv === 'production' ? 'combined' : 'dev'));
+}
+
+app.get('/api/health', (_req, res) => {
+  const database = databaseState();
+  res.json({
+    success: true,
+    status: 'ok',
+    database,
+    uptime: Math.round(process.uptime()),
+    timestamp: new Date().toISOString(),
+  });
 });
 
-// Define the port
-const PORT = process.env.PORT || 5000;
+app.use('/api', apiLimiter, routes);
 
-// Start the server
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+// In production, serve the built React app from the same server (optional)
+const clientDist = path.resolve(__dirname, '../../frontend/dist');
+if (isProduction && fs.existsSync(clientDist)) {
+  app.use(express.static(clientDist));
+  app.get('*', (req, res, next) => {
+    if (req.path.startsWith('/api')) return next();
+    return res.sendFile(path.join(clientDist, 'index.html'));
+  });
+}
+
+app.use(notFoundHandler);
+app.use(errorHandler);
+
+export default app;

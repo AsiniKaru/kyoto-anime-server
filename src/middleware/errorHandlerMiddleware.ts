@@ -1,6 +1,6 @@
 
 import type { NextFunction, Request, Response } from 'express';
-import { ApiError } from '../utils/ApiError.js';
+import { ApiError } from '../utils/apiError.js';
 import { isProduction } from '../config/env.js';
 
 interface MongoLikeError extends Error {

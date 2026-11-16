@@ -1,11 +1,30 @@
-import express from 'express';
-import { getAnime, getGenres, getSchedule, listAnime } from '../controllers/animeController.js';
+import { Router } from 'express';
+import {
+  searchAnime,
+  getHome,
+  getSeasonal,
+  getAnimeById,
+  getAnimeEpisodes,
+  getAnimeRecommendations,
+  getAnimeCharacters,
+  getAnimeTrailer,
+  getGenres,
+  getRandomAnime,
+} from '../controllers/animeController.js';
 
-const router = express.Router();
+const router = Router();
 
-router.get('/', listAnime);
-router.get('/genres', getGenres); // keep these two above '/:id'
-router.get('/schedule', getSchedule);
-router.get('/:id', getAnime);
+// Static / collection routes first so "/:id" does not swallow them
+router.get('/home', getHome);
+router.get('/search', searchAnime);
+router.get('/seasonal', getSeasonal);
+router.get('/genres', getGenres);
+router.get('/random', getRandomAnime);
+
+router.get('/:id', getAnimeById);
+router.get('/:id/episodes', getAnimeEpisodes);
+router.get('/:id/recommendations', getAnimeRecommendations);
+router.get('/:id/characters', getAnimeCharacters);
+router.get('/:id/trailer', getAnimeTrailer);
 
 export default router;
