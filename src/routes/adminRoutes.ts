@@ -6,7 +6,6 @@ import {
   deleteUser,
   getAdminReviews,
 } from '../controllers/adminController.js';
-import { getPlatformReport } from '../controllers/reportController.js';
 import { adminOnly, protect } from '../middleware/authMiddleware.js';
 import { requireDatabase } from '../middleware/requireDatabase.js';
 import { validateBody } from '../middleware/validateMiddleware.js';
@@ -21,6 +20,5 @@ router.get('/users', getAdminUsers);
 router.patch('/users/:id/role', validateBody(updateRoleSchema), updateUserRole);
 router.delete('/users/:id', deleteUser);
 router.get('/reviews', getAdminReviews);
-router.get('/report.pdf', getPlatformReport);
 
 export default router;

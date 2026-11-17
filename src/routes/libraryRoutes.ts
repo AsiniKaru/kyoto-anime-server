@@ -15,7 +15,6 @@ import {
   getMyReviews,
   getLibraryStats,
 } from '../controllers/libraryController.js';
-import { getLibraryReport } from '../controllers/reportController.js';
 import { protect } from '../middleware/authMiddleware.js';
 import { requireDatabase } from '../middleware/requireDatabase.js';
 import { validateBody } from '../middleware/validateMiddleware.js';
@@ -30,13 +29,14 @@ const router = Router();
 
 router.use(requireDatabase);
 
-/* Reviews listing is public so guests can read them */
-router.get('/reviews/:malId', getAnimeReviews);
+router.get('/reviews/:malId', getAnimeReviews); 
+router.post('/reviews/:malId', upsertReview); 0
+router.delete('/reviews/:id', deleteReview); 
+router.get('/reviews', getMyReviews);
 
 router.use(protect);
 
 router.get('/stats', getLibraryStats);
-router.get('/report.pdf', getLibraryReport);
 
 router.get('/watchlist', getWatchlist);
 router.post('/watchlist', validateBody(watchlistSchema), upsertWatchlistEntry);
