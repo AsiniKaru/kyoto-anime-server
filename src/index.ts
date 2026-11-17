@@ -13,6 +13,10 @@ import { notFoundHandler, errorHandler } from './middleware/errorHandlerMiddlewa
 import { apiLimiter } from './middleware/rateLimitMiddleware.js';
 import mongoSanitize from 'express-mongo-sanitize';
 import aiRoutes from './routes/aiRoutes.js';
+import authRoutes from './routes/authRoutes.js'
+import animeRoutes from './routes/animeRoutes.js'
+import libraryRoutes from './routes/libraryRoutes.js'
+
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -58,11 +62,15 @@ app.use(
     callback(null, { origin: allowed, credentials: true });
   })
 );
-app.use('/api/ai', aiRoutes);
 app.use(express.json({ limit: '1mb' }));
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(mongoSanitize());
+app.use('/api/anime', animeRoutes);
+app.use('/api/auth', authRoutes);
+app.use('/api/ai', aiRoutes);
+app.use('/api/library', libraryRoutes);
+
 
 if (env.nodeEnv !== 'test') {
   app.use(morgan(env.nodeEnv === 'production' ? 'combined' : 'dev'));
