@@ -37,6 +37,24 @@ async function bootstrap() {
     await ensureAdminUser().catch((error: unknown) => {
       console.error('[seed] Could not prepare the administrator account:', error);
     });
+    // Drop stale indexes left over from previous schema versions (e.g. tmdbId).
+    try {
+      const { default: User } = await import('./models/userModel.js');
+      const { default: Watchlist } = await import('./models/watchlistModel.js');
+      const { default: History } = await import('./models/historyModel.js');
+      const { default: Review } = await import('./models/reviewModel.js');
+      const { default: RefreshToken } = await import('./models/refreshTokenModel.js');
+      await Promise.all([
+        User.syncIndexes(),
+        Watchlist.syncIndexes(),
+        History.syncIndexes(),
+        Review.syncIndexes(),
+        RefreshToken.syncIndexes(),
+      ]);
+      console.log('[db] Indexes synced.');
+    } catch (error) {
+      console.warn('[db] Could not sync indexes:', error);
+    }
   }
 
   const shutdown = async (signal: string) => {

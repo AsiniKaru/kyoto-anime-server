@@ -66,11 +66,25 @@ export const upsertWatchlistEntry = asyncHandler(async (req, res) => {
     status: body.status,
   };
 
-  const entry = await Watchlist.findOneAndUpdate(
-    { user: userId, malId: payload.malId },
-    { $set: payload },
-    { new: true, upsert: true, setDefaultsOnInsert: true, runValidators: true }
-  ).lean();
+  let entry;
+  try {
+    entry = await Watchlist.findOneAndUpdate(
+      { user: userId, malId: payload.malId },
+      { $set: payload },
+      { new: true, upsert: true, setDefaultsOnInsert: true, runValidators: true }
+    ).lean();
+  } catch (error) {
+    const mongoError = error as { code?: number; message?: string };
+    if (mongoError?.code === 11000) {
+      entry = await Watchlist.findOneAndUpdate(
+        { user: userId, malId: payload.malId },
+        { $set: payload },
+        { new: true, runValidators: true }
+      ).lean();
+    } else {
+      throw error;
+    }
+  }
 
   res.status(201).json({
     success: true,
