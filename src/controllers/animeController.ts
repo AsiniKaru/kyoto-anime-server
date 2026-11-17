@@ -14,6 +14,7 @@ import {
 import { badRequest, notFound } from '../utils/apiError.js';
 import type { Anime, AnimeGenre, Character, Episode, Recommendation } from '../types/anime.js';
 import { asyncHandler } from '../utils/asyncHandler.js';
+import AnimeModel from '../models/animeModel.js';
 
 const CURRENT_YEAR = new Date().getFullYear();
 const SEASONS = new Set(['WINTER', 'SPRING', 'SUMMER', 'FALL']);
@@ -296,6 +297,23 @@ export const getAnimeById = asyncHandler(async (req, res) => {
     anime = cached;
     anime.cached = true;
   }
+
+  // --- RESTORED MONGODB CUSTOM LOGIC ---
+  try {
+    const localDbData = await AnimeModel.findOne({ anilistId: animeId });
+    if (localDbData) {
+      if (localDbData.videoUrl) {
+        (anime as any).videoUrl = localDbData.videoUrl;
+      }
+      if (localDbData.episodes && localDbData.episodes.length > 0) {
+        // Overwrites the AniList episode count with your rich episodes array
+        (anime as any).episodes = localDbData.episodes; 
+      }
+    }
+  } catch (dbError) {
+    console.error("MongoDB query error:", dbError);
+  }
+  // -------------------------------------
 
   const trailer = await resolveTrailer({ title: anime.title, trailer: anime.trailer });
 

@@ -128,20 +128,44 @@ export const upsertHistory = asyncHandler(async (req, res) => {
   const userId = currentUserId(req);
   const body = req.body as HistoryInput;
 
-  const entry = await History.findOneAndUpdate(
-    { user: userId, malId: body.malId },
-    {
-      $set: {
-        title: cleanString(body.title).slice(0, 200),
-        image: cleanString(body.image).slice(0, 500),
-        episode: body.episode,
-        progress: body.progress,
-        durationSeconds: body.durationSeconds,
-        lastWatchedAt: new Date(),
+  let entry;
+  try {
+    entry = await History.findOneAndUpdate(
+      { user: userId, malId: body.malId },
+      {
+        $set: {
+          title: cleanString(body.title).slice(0, 200),
+          image: cleanString(body.image).slice(0, 500),
+          episode: body.episode,
+          progress: body.progress,
+          durationSeconds: body.durationSeconds,
+          lastWatchedAt: new Date(),
+        },
       },
-    },
-    { new: true, upsert: true, setDefaultsOnInsert: true, runValidators: true }
-  ).lean();
+      { new: true, upsert: true, setDefaultsOnInsert: true, runValidators: true }
+    ).lean();
+  } catch (error) {
+    // Race condition: a concurrent insert won. Retry as a plain update.
+    const mongoError = error as { code?: number };
+    if (mongoError?.code === 11000) {
+      entry = await History.findOneAndUpdate(
+        { user: userId, malId: body.malId },
+        {
+          $set: {
+            title: cleanString(body.title).slice(0, 200),
+            image: cleanString(body.image).slice(0, 500),
+            episode: body.episode,
+            progress: body.progress,
+            durationSeconds: body.durationSeconds,
+            lastWatchedAt: new Date(),
+          },
+        },
+        { new: true, runValidators: true }
+      ).lean();
+    } else {
+      throw error;
+    }
+  }
 
   // Watching an anime automatically puts it in "watching" if not listed yet
   await Watchlist.findOneAndUpdate(
