@@ -21,7 +21,6 @@ const SEASONS = new Set(['WINTER', 'SPRING', 'SUMMER', 'FALL']);
 const TYPES = new Set(['tv', 'movie', 'ova', 'ona', 'special', 'music']);
 const STATUSES = new Set(['airing', 'complete', 'upcoming', 'hiatus']);
 
-/** Maximum time the homepage waits for live AniList data before using the cache. */
 const HOME_DEADLINE_MS = 9000;
 
 interface SearchVariables {
@@ -181,7 +180,6 @@ export const searchAnime = asyncHandler(async (req, res) => {
       },
     });
   } catch {
-    // AniList unavailable: keep search usable with the bundled cached catalogue.
     const fallback = fallbackSearch({
       q: variables.search,
       page,
@@ -287,7 +285,6 @@ export const getAnimeById = asyncHandler(async (req, res) => {
   const animeId = toInt(req.params.id, 0, 1, Number.MAX_SAFE_INTEGER);
   if (!animeId) throw badRequest('A valid anime id is required');
 
-  // 1. Keep this strictly typed as Anime so mapAnime and fallbackAnimeById work perfectly
   let anime: Anime; 
 
   try {
@@ -301,10 +298,8 @@ export const getAnimeById = asyncHandler(async (req, res) => {
     anime.cached = true;
   }
 
-  // 2. Clone the anime object into a flexible 'any' type to safely inject our custom data
   const finalAnimeResponse: any = { ...anime };
 
-  // --- NEW CUSTOM DATABASE LOGIC START ---
   try {
     const localDbData = await AnimeModel.findOne({ anilistId: animeId });
     
