@@ -14,6 +14,7 @@ import {
 import { asyncHandler } from '../utils/asyncHandler.js';
 import { badRequest, notFound } from '../utils/apiError.js';
 import type { Anime, AnimeGenre, Character, Episode, Recommendation } from '../types/anime.js';
+import AnimeModel from '../models/animeModel.js';
 
 const CURRENT_YEAR = new Date().getFullYear();
 const SEASONS = new Set(['WINTER', 'SPRING', 'SUMMER', 'FALL']);
@@ -286,7 +287,8 @@ export const getAnimeById = asyncHandler(async (req, res) => {
   const animeId = toInt(req.params.id, 0, 1, Number.MAX_SAFE_INTEGER);
   if (!animeId) throw badRequest('A valid anime id is required');
 
-  let anime: Anime;
+  // 1. Keep this strictly typed as Anime so mapAnime and fallbackAnimeById work perfectly
+  let anime: Anime; 
 
   try {
     const payload = await anilist.media(animeId, CACHE_TTL.detail);
@@ -299,9 +301,30 @@ export const getAnimeById = asyncHandler(async (req, res) => {
     anime.cached = true;
   }
 
+  // 2. Clone the anime object into a flexible 'any' type to safely inject our custom data
+  const finalAnimeResponse: any = { ...anime };
+
+  // --- NEW CUSTOM DATABASE LOGIC START ---
+  try {
+    const localDbData = await AnimeModel.findOne({ anilistId: animeId });
+    
+    if (localDbData) {
+      if (localDbData.videoUrl) {
+        finalAnimeResponse.videoUrl = localDbData.videoUrl; // Inject Movie stream
+      }
+      if (localDbData.episodes && localDbData.episodes.length > 0) {
+        finalAnimeResponse.episodes = localDbData.episodes; // Overwrite number with array
+      }
+    }
+  } catch (dbError) {
+    console.error("MongoDB query error:", dbError);
+  }
+  // --- NEW CUSTOM DATABASE LOGIC END ---
+
   const trailer = await resolveTrailer({ title: anime.title, trailer: anime.trailer });
 
-  res.json({ success: true, data: { anime, trailer } });
+  // 3. Send the custom response object to React
+  res.json({ success: true, data: { anime: finalAnimeResponse, trailer } });
 });
 
 const EPISODES_PER_PAGE = 100;
