@@ -12,11 +12,6 @@ const intFromEnv = (value: string | undefined, fallback: number): number => {
   return Number.isFinite(parsed) && parsed > 0 ? parsed : fallback;
 };
 
-const boolFromEnv = (value: string | undefined, fallback: boolean): boolean => {
-  if (value === undefined) return fallback;
-  return ['1', 'true', 'yes', 'on'].includes(value.trim().toLowerCase());
-};
-
 const urlListFromEnv = (value: string | undefined, fallback: string[]): string[] => {
   const raw = (value ?? '').split(',').map((item) => item.trim()).filter(Boolean);
   return raw.length ? raw : fallback;

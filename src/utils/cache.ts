@@ -28,11 +28,3 @@ export function cacheSet<T>(key: string, value: T, ttlMs = 5 * 60 * 1000): T {
   store.set(key, { value, expiresAt: Date.now() + ttlMs });
   return value;
 }
-
-export function cacheClear(): void {
-  store.clear();
-}
-
-export function cacheStats(): { size: number; maxEntries: number } {
-  return { size: store.size, maxEntries: MAX_ENTRIES };
-}

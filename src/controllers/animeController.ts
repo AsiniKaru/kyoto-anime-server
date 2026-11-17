@@ -11,10 +11,9 @@ import {
   fallbackRecommendations,
   fallbackSearch,
 } from '../services/fallbackCatalogueService.js';
-import { asyncHandler } from '../utils/asyncHandler.js';
 import { badRequest, notFound } from '../utils/apiError.js';
 import type { Anime, AnimeGenre, Character, Episode, Recommendation } from '../types/anime.js';
-import AnimeModel from '../models/animeModel.js';
+import { asyncHandler } from '../utils/asyncHandler.js';
 
 const CURRENT_YEAR = new Date().getFullYear();
 const SEASONS = new Set(['WINTER', 'SPRING', 'SUMMER', 'FALL']);
@@ -298,28 +297,9 @@ export const getAnimeById = asyncHandler(async (req, res) => {
     anime.cached = true;
   }
 
-  const finalAnimeResponse: any = { ...anime };
-
-  try {
-    const localDbData = await AnimeModel.findOne({ anilistId: animeId });
-    
-    if (localDbData) {
-      if (localDbData.videoUrl) {
-        finalAnimeResponse.videoUrl = localDbData.videoUrl; // Inject Movie stream
-      }
-      if (localDbData.episodes && localDbData.episodes.length > 0) {
-        finalAnimeResponse.episodes = localDbData.episodes; // Overwrite number with array
-      }
-    }
-  } catch (dbError) {
-    console.error("MongoDB query error:", dbError);
-  }
-  // --- NEW CUSTOM DATABASE LOGIC END ---
-
   const trailer = await resolveTrailer({ title: anime.title, trailer: anime.trailer });
 
-  // 3. Send the custom response object to React
-  res.json({ success: true, data: { anime: finalAnimeResponse, trailer } });
+  res.json({ success: true, data: { anime, trailer } });
 });
 
 const EPISODES_PER_PAGE = 100;

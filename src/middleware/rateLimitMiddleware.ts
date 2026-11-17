@@ -1,4 +1,3 @@
-import type { RequestHandler } from 'express';
 import rateLimit from 'express-rate-limit';
 
 /** Tight limiter for login / register / password change. */

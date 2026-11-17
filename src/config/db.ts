@@ -13,7 +13,7 @@ const state: DatabaseState = {
 const sleep = (ms: number): Promise<void> => new Promise((resolve) => setTimeout(resolve, ms));
 
 const connectOnce = async (): Promise<void> => {
-  const conn = await mongoose.connect(process.env.MONGODB_URI ?? '', {
+  await mongoose.connect(process.env.MONGODB_URI ?? '', {
     serverSelectionTimeoutMS: 10000,
   } as ConnectOptions);
   state.connectionState = 'connected';
