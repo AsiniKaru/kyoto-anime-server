@@ -12,6 +12,7 @@ import routes from './routes/indexRoutes.js';
 import { notFoundHandler, errorHandler } from './middleware/errorHandlerMiddleware.js';
 import { apiLimiter } from './middleware/rateLimitMiddleware.js';
 import mongoSanitize from 'express-mongo-sanitize';
+import aiRoutes from './routes/aiRoutes.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -57,7 +58,7 @@ app.use(
     callback(null, { origin: allowed, credentials: true });
   })
 );
-
+app.use('/api/ai', aiRoutes);
 app.use(express.json({ limit: '1mb' }));
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
