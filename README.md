@@ -42,7 +42,7 @@ See `.example.env`. Key variables:
 - `CLIENT_URL` / `CLIENT_URLS` - allowed frontend origins (CORS)
 - `ANILIST_API_URL` - AniList GraphQL endpoint
 - `YOUTUBE_API_KEY` - (optional) YouTube Data API key
-- `ADMIN_EMAIL` / `ADMIN_PASSWORD` / `ADMIN_NAME` - (optional) seed an admin
+
 
 ## API Overview
 
@@ -61,4 +61,4 @@ See `.example.env`. Key variables:
 
 ## License
 
-Built for ITS2020 - Rapid Application Development (RAD) final coursework.
+Kyoto Anime - Rapid Application Development (RAD) final coursework.
