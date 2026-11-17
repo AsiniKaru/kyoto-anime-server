@@ -18,15 +18,6 @@ export const updateProfileSchema = z
   .object({
     name: z.string().trim().min(2).max(60).optional(),
     email: z.string().trim().toLowerCase().email().optional(),
-    avatar: z
-      .string()
-      .trim()
-      .max(500)
-      .refine((value) => !value || /^https?:\/\//i.test(value), {
-        message: 'Avatar must be a valid http(s) image URL',
-      })
-      .optional(),
-    bio: z.string().trim().max(240).optional(),
   })
   .refine((value) => Object.keys(value).length > 0, {
     message: 'Nothing to update',

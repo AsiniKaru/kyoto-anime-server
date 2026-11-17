@@ -174,11 +174,9 @@ export const updateProfile = asyncHandler(async (req, res) => {
   if (!current) throw unauthorized('Please log in to continue');
 
   const body = req.body as UpdateProfileInput;
-  const updates: Partial<Pick<IUser, 'name' | 'email' | 'avatar' | 'bio'>> = {};
+  const updates: Partial<Pick<IUser, 'name' | 'email'>> = {};
 
   if (body.name !== undefined) updates.name = body.name;
-  if (body.avatar !== undefined) updates.avatar = body.avatar;
-  if (body.bio !== undefined) updates.bio = body.bio;
 
   if (body.email !== undefined) {
     const taken = await User.findOne({ email: body.email, _id: { $ne: current._id } });
