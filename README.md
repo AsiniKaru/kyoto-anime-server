@@ -12,7 +12,6 @@ reviews), and an admin analytics/reporting API.
 - JWT (jsonwebtoken) + bcryptjs
 - Zod (validation)
 - Helmet, CORS, Morgan, express-rate-limit
-- PDFKit (PDF reports)
 
 ## Setup & Run
 
