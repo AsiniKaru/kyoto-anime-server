@@ -13,6 +13,13 @@ reviews), and an admin analytics/reporting API.
 - Zod (validation)
 - Helmet, CORS, Morgan, express-rate-limit
 
+## Deployed URLs 
+- Frontend: https://kyoto-anime-client.vercel.app 
+- Backend: https://kyoto-anime-server.onrender.com 
+- Frontend Repository: https://github.com/AsiniKaru/kyoto-anime-client 
+- Backend Repository: https://github.com/AsiniKaru/kyoto-anime-server
+
+
 ## Setup & Run
 
 ```bash
@@ -55,8 +62,6 @@ See `.example.env`. Key variables:
 - `GET/POST/PATCH/DELETE /api/library/watchlist[/:malId]`
 - `GET/POST/DELETE /api/library/history[/:malId]`
 - `GET/POST/DELETE /api/library/reviews[/:id]`
-- `GET  /api/library/stats`, `/api/library/report.pdf`
-- `GET  /api/admin/stats`, `/api/admin/users`, `/api/admin/reviews`, `/api/admin/report.pdf`
 
 ## License
 
